@@ -7,5 +7,5 @@
 **Unidade Curricular:** UC 4 – Analisar Programação Estruturada e Orientada a Objetos  
 **Professor Orientador:** Hudson Neves  
 
-**Aluno(a):** [Seu nome completo]  
-**Data:** [Data de entrega ou elaboração do trabalho]
+**Alunos(a):** <h2>César Augusto, João Gabriel, kauã Thierry, Luiz Felipe e Pedro Matos.</h2>
+**Data:** [Pendência]
