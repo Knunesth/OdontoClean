@@ -32,7 +32,7 @@ void cadastrar_funcionarios() {
     fgets(senhaF, sizeof(senhaF), stdin);
     senhaF[strcspn(senhaF, " \n")] = 0;
 
-    fprintf(fp, "====================\nNome: %s\nEmail: %s\nSenha: %s\n====================\n", nomeF, emailF, senhaF);
+    fprintf(fp, "==========================\n Nome: %s\n Email: %s\n Senha: %s\n==========================\n", nomeF, emailF, senhaF);
     fclose(fp);
 
     printf("Cadastrado com sucesso");
@@ -107,14 +107,16 @@ int main(){
     int senhaADM; //senha ADM
     
     while (1) {
-        printf("\n---------------------------------\n");
-        printf("|Bem vindo ao menu OdontoClean\n|");
-        printf("---------------------------------\n");
-        printf("1 - Painel do Cliente\n");     
-        printf("2 - Painel do Funcionario\n");     
-        printf("3 - Ajuda\n");    
-        printf("0 - Sair\n"); 
-        printf("Escolha uma opcao:\n");
+        system("cls");
+        printf("========== Bem vindo ao menu OdontoClean ==========\n");
+        printf("---------------------------------------------------\n");
+        printf("| 1 - Painel do Cliente                            |\n");     
+        printf("| 2 - Painel do Funcionario                        |\n");     
+        printf("| 3 - Ajuda                                        |\n");    
+        printf("| 0 - Sair                                         |\n"); 
+        printf("---------------------------------------------------\n");
+        printf("==================================================\n");
+        printf("Escolha uma opcao: ");
         scanf(" %d", &opcao1);
 
         switch (opcao1){
@@ -123,11 +125,17 @@ int main(){
             return 0;
 
         case 1: 
-            printf(" Painel cliente\n"); 
-            printf("1- Cadastar\n"); 
-            printf("2- Login\n"); 
-            printf("3- Prefiro nao realizar login\n"); 
-            printf("0- Sair\n"); 
+            system("cls");
+
+            printf("================ PAINEL DO CLIENTE ================\n"); 
+            printf("---------------------------------------------------\n");
+            printf("| 1- Cadastar                                      |\n"); 
+            printf("| 2- Login                                         |\n"); 
+            printf("| 3- Prefiro nao realizar login                    |\n"); 
+            printf("| 0- Sair                                          |\n");
+            printf("---------------------------------------------------\n"); 
+            printf("===================================================\n"); 
+            printf("Escolha uma opcao: ");
             scanf(" %i", &opcao2);
             switch (opcao2){
                 case 0:
@@ -136,13 +144,16 @@ int main(){
 
                 case 1: 
                     while (1) { 
-                        printf("1 - Cadastro ");
-                        printf("0 - Sair  "); 
-                        if (opcaoC_1 == 1 ){ 
+                        printf("========= Cadastro =========\n"); 
+                        printf("| 1 - Cadastro             |\n");
+                        printf("| 0 - Sair                 |\n"); 
+                        printf("============================\n"); 
+                        printf("Escolha uma opcao: ");
+                        if(opcaoC_1 == 1 ){ 
                             printf("Cadastro Cliente\n"); 
                             cadastrar_cliente();
                         } else if( opcaoC_1 == 0){ 
-                            printf("Saindo do menu cadastro\n");
+                            printf("Saindo do menu cadastro...\n");
                             break;
                         }else{
                             printf("Escolha um opcao valida\n"); 
@@ -167,36 +178,51 @@ int main(){
             break;    
             
 
-        case 2: 
+        case 2:
+            system("cls");
 
-            printf("Painel Funcionario\n");
-            printf("1-Cadastro do Funcionario\n");
-            printf("2-Insira seu ID e Senha\n"); 
-            printf("0- Sair\n"); 
+            printf("============== PAINEL DO FUNCIONARIO ==============\n");
+            printf("---------------------------------------------------\n");
+            printf("| 1-Cadastro do Funcionario                        |\n");
+            printf("| 2-Insira seu ID e Senha                          |\n"); 
+            printf("| 0- Sair                                          |\n"); 
+            printf("---------------------------------------------------\n");
+            printf("===================================================\n");
+            printf("Escolha uma opcao: "); 
             scanf(" %d", &opcaoFun1);
             switch (opcaoFun1){
                 case 0:
                     printf("\nSaindo do sistema...\n");
                     break;
-                case 1:
-                    printf("Cadastro do funcionario: ");
+            case 1:
+                printf("========= Cadastro do funcionario =========\n");
+
+                int tentativas = 3;
+                do {
+                    printf("Digite a senha do ADM para prosseguir ('0' para sair): ");
                     scanf(" %i", &senhaADM);
-                    while (senhaADM != 102938){
-                        printf("Senha incorreta!. Tente novamente pressionando 'ENTER'\n");
-                        enter = getchar();
-                        system("cls");
-                        printf("0- Sair: \n");
-                        printf("Cadastro do funcionario: ");
-                        scanf(" %i", &senhaADM);
-                        if (senhaADM == 0){
-                            printf("Saindo...");
+
+                    if (senhaADM == 0) {
+                        printf("Saindo do cadastro de funcionário...\n");
+                        break;
+                    }
+
+                    if (senhaADM != 102938) {
+                        tentativas--;
+                        if (tentativas > 0) {
+                            printf("Senha incorreta!!! Você tem %d tentativa(s) restante(s).\n\n", tentativas);
+                        } else {
                             break;
                         }
                     }
-                    printf("Cadastro do funcionario\n");
+                } while (senhaADM != 102938 && tentativas > 0);
+
+                if (senhaADM == 102938) {
                     cadastrar_funcionarios();
-                    
-                    break;
+                }
+
+                break;
+
 
                 case 2:
 
@@ -209,11 +235,17 @@ int main(){
                 }
             break;
             
-        case 3: 
-             printf(" Ajuda\n"); 
-             printf("1- Chat bot\n"); 
-             printf("2- Conversar com o atendente\n"); 
-             printf("0- Sair\n"); 
+        case 3:
+            system("cls");
+
+            printf("======= COMO PODERIAMOS TE AJUDAR? =======\n"); 
+            printf("------------------------------------------\n");
+            printf("| 1- Chat bot                             |\n"); 
+            printf("| 2- Conversar com o atendente            |\n"); 
+            printf("| 0- Sair                                 |\n");
+            printf("------------------------------------------\n");
+            printf("==========================================\n"); 
+            printf("Escolha uma opcao: "); 
             break;
              
         default:
