@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+void marcar_consulta(char nomeFuncionario[]);
+
 #define MAX_LINHA 256
 
 void limpar_buffer() {
@@ -40,6 +42,7 @@ void cadastrar_funcionarios() {
 
     printf("Cadastrado com sucesso");
 }
+//fim cadastrar funcionarios
 
 //cadastrar clientes
 void cadastrar_cliente() {
@@ -71,6 +74,7 @@ void cadastrar_cliente() {
 
     printf("Cadastrado com sucesso\n");
 }
+//fim cadastrar clientes
 
 //login funcionarios
 int loginF(const char *arquivo_db, const char *email_entra, const char *senha_entra) {
@@ -99,7 +103,6 @@ int loginF(const char *arquivo_db, const char *email_entra, const char *senha_en
                     scanf(" %c", &teste);
                     encontrou = 1;
 
-
                     break;
                 } else {
                     printf("Email encontrado, mas a senha está errada para o email: %s\n", email);
@@ -119,35 +122,83 @@ int loginF(const char *arquivo_db, const char *email_entra, const char *senha_en
 
     return 1;
 }
+//fim login funcionarios
+
+//consultas
+void marcar_consulta(char nomeFuncionario[]) {
+    char nomePaciente[50];
+    char data[15];
+    char horario[10];
+    char especialidade[30];
+
+    FILE *fp = fopen("../dados/consultas.txt", "a");
+    if (fp == NULL) {
+        printf("Erro ao abrir o arquivo de consultas.\n");
+        return;
+    }
+
+    printf("========= Marcar Consulta =========\n");
+    printf("Nome do paciente: ");
+    limpar_buffer(); // função para limpar o buffer do teclado
+    fgets(nomePaciente, sizeof(nomePaciente), stdin);
+    nomePaciente[strcspn(nomePaciente, "\n")] = '\0'; // Remove o \n
+
+    printf("Data (dd/mm/aaaa): ");
+    fgets(data, sizeof(data), stdin);
+    data[strcspn(data, "\n")] = '\0';
+
+    printf("Horário (hh:mm): ");
+    fgets(horario, sizeof(horario), stdin);
+    horario[strcspn(horario, "\n")] = '\0';
+
+    printf("Especialidade: ");
+    fgets(especialidade, sizeof(especialidade), stdin);
+    especialidade[strcspn(especialidade, "\n")] = '\0';
+
+    fprintf(fp, "Funcionário: %s\nPaciente: %s\nData: %s\nHorário: %s\nEspecialidade: %s\n---\n",
+            nomeFuncionario, nomePaciente, data, horario, especialidade);
+
+    fclose(fp);
+
+    printf("Consulta marcada com sucesso!\n");
+}
+//fim consultas
 
 //login clientes
 int loginC(const char *arquivo_db, const char *email_entra, const char *senha_entra) {
     FILE *arquivo = fopen(arquivo_db, "r");
     if (arquivo == NULL) {
-        printf("Arquivo nao encontrado.");
+        printf("Arquivo nao encontrado.\n");
         return 0;
     }
 
     char linha[MAX_LINHA];
-    char nome[100], email[100], senha[100];
+    static char nome[100];  // ALTERAÇÃO AQUI
+    char email[100];
+    char senha[100];
     int encontrou = 0;
-    char teste;
+    char alternativaC;
 
     while (fgets(linha, MAX_LINHA, arquivo)) {
         if (strncmp(linha, "Nome:", 5) == 0) {
             sscanf(linha, "Nome: %[^\n]", nome);
         } else if (strncmp(linha, "Email:", 6) == 0) {
             sscanf(linha, "Email: %[^\n]", email);
-        } else if(strncmp(linha, "Senha:", 6) == 0) {
+        } else if (strncmp(linha, "Senha:", 6) == 0) {
             sscanf(linha, "Senha: %[^\n]", senha);
 
             if (strcmp(email_entra, email) == 0) {
                 if (strcmp(senha_entra, senha) == 0) {
-                    printf("Login bem sucedido. Bem vindo: %s.\n", nome); //Colocar as funcionalidades quando entrar no funcionario
-                    scanf(" %c", &teste);
+                    printf("Login bem sucedido. Bem vindo: %s.\n", nome);
+                    printf("Deseja marcar uma consulta, %s? (s/n): ", nome);
+                    scanf(" %c", &alternativaC);
+                    if (alternativaC == 's' || alternativaC == 'S') {
+                        marcar_consulta(nome); // Aqui nome é static, válido fora do escopo
+                    } else {
+                        printf("Consulta cancelada com sucesso!\n");
+                        printf("Saindo do programa...!\n");
+                    }
                     encontrou = 1;
-
-
                     break;
                 } else {
                     printf("Email encontrado, mas a senha está errada para o email: %s\n", email);
@@ -160,14 +211,16 @@ int loginC(const char *arquivo_db, const char *email_entra, const char *senha_en
 
     fclose(arquivo);
 
-    if (encontrou != 1) {
-        printf("Email nao encontrado. \n");
+    if (!encontrou) {
+        printf("Email nao encontrado.\n");
         return 0;
     }
 
     return 1;
 }
 
+
+//codigo principal
 int main(){
     setlocale(LC_ALL, "");
     system("chcp 65001");
@@ -205,6 +258,7 @@ int main(){
     int senhaADM; //senha ADM
     char opcaoCB_1;
     char emailF[100], senha[100], emailC[100], senhaC[100];//funcionairo
+    char nome_cliente[50] = "";
     
     while (1) {
         //system("cls");
@@ -269,13 +323,13 @@ int main(){
                     
                 case 2:
                     printf("\n========= Login =========\n"); 
-                    printf("| 0- voltar               |\n");
-                    printf("| 1- login                |\n");
-                    printf("\n========================\n");
+                    printf("| 1- Login                 |\n");
+                    printf("| 0- Voltar                |\n");
+                    printf("==========================\n");
                     scanf(" %i", &opcaoC_2);
                     if(opcaoC_2 == 1){
                         limpar_buffer();
-                        //Login funcionario
+                        //Login Cliente
                         printf("Login do usuario\n");
                         printf("Email: ");
                         fgets(emailC, sizeof(emailC), stdin);
@@ -306,17 +360,7 @@ int main(){
                     scanf(" %i", &opcaoC_3);
                         switch (opcaoC_3){
                             case 1:
-                                printf("\n========= Marcar Consulta =========\n");
-                                printf("| 1- 08/07 - 14:30\n");
-                                printf("| 2- 09/07 - 15:00\n");
-                                printf("| 3- 10/07 - 08:30\n");
-                                printf("| 0- sair\n");
-                                scanf(" %i", &opcaoMC_1);
-                                    if(opcaoMC_1 == 0){
-                                        printf("\nSaindo da Aréa de Marcação\n");
-                                        //void 
-                                    }
-                        
+                                marcar_consulta(nome_cliente);
                                 break;
                                 
                             default:
@@ -375,7 +419,7 @@ int main(){
                     } while (senhaADM != 102938 && tentativas > 0);
 
                     if (senhaADM == 102938) {
-                        cadastrar_funcionarios();
+                        cadastrar_funcionarios();//void funcionarios
                     }
 
                     break;
@@ -442,7 +486,7 @@ int main(){
                             printf("Para conversar com um atendente:\n> Voce pode entrar em contato com nossos funcionarios: (61)9 9999-9999 ou (61)8 8888-8888\n");
                             printf("> Via E-mail: OdontoClean@gmaim.com \n");
                             printf("> Via Insta: @odontoclean_ofc\n");
-                            printf("> Nosso grupo do Whatsapp: 'https://chat.whatsapp.com/JAXdRCX4T6EIDtKBfBfCZG'\n\n");
+                            printf("> Nosso grupo do Whatsapp: 'https://chat.whatsapp.com/invite/BG4hLrNs5GHK5LAP9VtDcW'\n\n");
                             break;
 
                         default:
@@ -456,3 +500,4 @@ int main(){
     
     }
 }
+//end code
