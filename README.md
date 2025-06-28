@@ -29,8 +29,6 @@ O **OdontoClean** é um sistema de gerenciamento para clínicas odontológicas, 
 - Cadastro e login de clientes
 - Interface principal
 - Painel de ajuda com chatbot e atendente
-
-### 🔄 Módulo 2 – Em desenvolvimento
 - Sistema de agendamento de consultas
 - Painel do administrador
 - Painel do funcionário
